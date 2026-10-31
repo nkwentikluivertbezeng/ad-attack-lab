@@ -2,7 +2,7 @@
 
 # Active Directory Attack & Detection Lab
 
-*(Splunk + Sysmon + Kali Linux + Atomic Red Team)*
+*(wazuh + Sysmon + Kali Linux + Atomic Red Team)*
 
  This repository documents my implementation of the lab with a focus on detection visibility, identity telemetry, and repeatable security testing.
 
