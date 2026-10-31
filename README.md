@@ -4,9 +4,9 @@
 
 *(Splunk + Sysmon + Kali Linux + Atomic Red Team)*
 
-Credits: avulman (original concept). This repository documents my implementation of the lab with a focus on detection visibility, identity telemetry, and repeatable security testing.
+ This repository documents my implementation of the lab with a focus on detection visibility, identity telemetry, and repeatable security testing.
 
-This project builds a controlled Active Directory environment and generates realistic authentication telemetry (successful and failed logons, brute-force activity, endpoint events) for investigation in Splunk. The goal is to simulate enterprise identity behavior in a contained lab environment.
+This project builds a controlled Active Directory environment and generates realistic authentication telemetry (successful and failed logons, brute-force activity, endpoint events) for investigation in Wazuh. The goal is to simulate enterprise identity behavior in a contained lab environment.
 
 **Estimated completion time:** 3–4 hours
 
@@ -44,7 +44,7 @@ All VMs are connected to a shared NAT network.
 
 Example addressing scheme:
 
-* Splunk Server (Ubuntu): `192.168.10.10`
+* Wazuh (docker): `127.0.0.1`
 * Domain Controller: `192.168.10.7`
 * Windows 10 Target: `192.168.10.100`
 * Kali Linux: `192.168.10.250`
@@ -59,9 +59,9 @@ All machines must share the same VirtualBox NAT Network.
 ```
 
 +-------------------+        +--------------------+
-| Kali Linux        |        | Splunk Enterprise  |
-| 192.168.10.250    |        | Ubuntu 192.168.10.10
-| (Crowbar / ART)   |<-----> | Web:8000  Recv:9997|
+| Kali Linux        |        | wazuh  |
+| 192.168.10.250    |        | Docker container
+| (Crowbar / ART)   |<-----> | linked with tailscale|
 +---------+---------+        +----------+---------+
           |                              ^
           | RDP Brute Force              | Forwarded logs
@@ -84,7 +84,7 @@ Windows systems forward:
 * System logs
 * Sysmon operational logs
 
-In Splunk, this enables detection of:
+In wazuh, this enables detection of:
 
 * Failed logons (Event ID 4625)
 * Successful logons (Event ID 4624)
@@ -139,7 +139,7 @@ renderXml = true
 source = XmlWinEventLog:Microsoft-Windows-Sysmon/Operational
 ```
 
-Restart the Splunk Forwarder service and verify ingestion:
+Restart the wazuh Forwarder service and verify ingestion:
 
 ```
 index=endpoint
@@ -237,7 +237,7 @@ The goal is validation — not exploitation.
 ## Troubleshooting Checklist
 
 * Ensure Windows 10 DNS points to the Domain Controller.
-* Confirm Splunk receiving is enabled on port 9997.
+* Confirm wazuh receiving is enabled on port 9997.
 * Restart Splunk Forwarder after modifying inputs.conf.
 * Ensure index name matches configuration.
 * Verify all VMs share the same NAT network.
@@ -276,5 +276,3 @@ screenshots/
 This lab is for controlled environments only.
 Do not run brute-force tools against systems without explicit authorization.
 
-
-Just tell me which direction you want this repo to lean.
